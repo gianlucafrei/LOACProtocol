@@ -1,0 +1,37 @@
+{
+  "name": "loacprotocol",
+  "version": "0.0.0",
+  "description": "Proof of concept for a lightweight offline access control protocol",
+  "engines": {
+    "node": ">= 10.13 <11"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.14",
+    "@types/node": "^10.14.1",
+    "browserify": "^16.2.3",
+    "jest": "~23.6.0",
+    "prettier": "1.15.3",
+    "rimraf": "^2.6.3",
+    "ts-jest": "~23.10.5",
+    "tslint": "^5.14.0",
+    "tslint-config-prettier": "1.17.0",
+    "tslint-microsoft-contrib": "~6.0.0",
+    "tsutils": "~3.7.0",
+    "typescript": "^3.3.3333"
+  },
+  "scripts": {
+    "clean": "rimraf coverage build tmp",
+    "build": "tsc -p tsconfig.release.json && browserify build/src/main.js --s loacprotocol -o build/loacprotocol.js",
+    "build:watch": "tsc -w -p tsconfig.release.json && browserify build/src/main.js --s loacprotocol -o build/loacprotocolt.js",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "author": "Gian-Luca Frei",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "minicertificates": "github:gianlucafrei/MiniCertificates",
+    "msgpack-lite": "^0.1.26",
+    "tslib": "~1.9.3"
+  }
+}
