@@ -6,10 +6,12 @@ import { CertificateSigningRequest } from '../src/certificateSigningRequest';
 
 describe('onboarding test', ()=>{
 
+    let subject = new Subject();
+    let ia = new IdentityAuthority(1000);
+
     test('test onboarding', ()=>{
 
-        let subject = new Subject();
-        let ia = new IdentityAuthority(1000);
+        
 
         let req = subject.generateOnboardingRequest('user66');
         let cert = ia.handleOnboaradingRequest(req, 'user66');
@@ -24,29 +26,31 @@ describe('onboarding test', ()=>{
         expect(isValid).toBe(true);  
     });
 
+    test('test signing request serialization', ()=>{
+
+        let req = subject.generateOnboardingRequest('user66');
+        let serialized = req.serialize();
+        let copy = CertificateSigningRequest.deserialize(serialized);
+
+        expect(copy.publicKey).toEqual(req.publicKey);
+        expect(copy.signature).toEqual(req.signature);
+        expect(copy.username).toEqual(req.username);
+
+    });
+
     test('test onboarding invalid signature', ()=>{
 
-        let subject = new Subject();
         let otherSubject = new Subject();
 
-
-        let ia = new IdentityAuthority(1000);
         let req = subject.generateOnboardingRequest('user66');
-
-        // Switch pk, now the signature will not be valid
-        let r = CertificateSigningRequest.deserialize(req);
-        r.publicKey = otherSubject.pk;
-        req = r.serialize();
+        req.publicKey = otherSubject.pk;
 
         expect(() => ia.handleOnboaradingRequest(req, 'user66')).toThrowError(ProtocolException);
     });
 
     test('test onboarding invalid user', ()=>{
 
-        let subject = new Subject();
-        let ia = new IdentityAuthority(1000);
         let req = subject.generateOnboardingRequest('user66');
-
         expect(() => ia.handleOnboaradingRequest(req, 'user77')).toThrowError(ProtocolException);
     });
 

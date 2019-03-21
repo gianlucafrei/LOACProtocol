@@ -27,6 +27,8 @@ describe('test access request', ()=>{
         expect(req.isValid()).toBe(true);
         let serialized = req.serialize();
 
+        let length = serialized.length;
+
         let deserialized = AccessRequest.deserialize(serialized);
         expect(deserialized.isValid()).toBe(true);
 

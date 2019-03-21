@@ -8,7 +8,7 @@ import { mc } from './main';
 
 export class Subject extends Party {
 
-    public generateOnboardingRequest(username: string): Buffer {
+    public generateOnboardingRequest(username: string): CertificateSigningRequest {
 
         // Create new keys and sign certificate request
         let msg = utils.concat(username, this.pk);
@@ -21,7 +21,7 @@ export class Subject extends Party {
         req.signature = s;
 
         // return the secret and request object
-        return req.serialize();
+        return req;
     }
 
     public issueDelegatedToken(
