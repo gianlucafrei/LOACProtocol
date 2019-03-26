@@ -1,4 +1,5 @@
 .vscode/
+build/docs/
 
 # Logs
 logs
@@ -25,4 +26,4 @@ coverage
 .eslintcache
 
 # Misc
-.DS_Store
+.DS_Storebuild/
