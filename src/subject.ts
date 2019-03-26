@@ -46,7 +46,7 @@ export class Subject extends Party {
         req.time = mc.now();
         req.description = description
 
-        let payload = utils.concat(username, req.time.toString(), req.description);
+        let payload = utils.concat(req.time.toString(), req.description);
         req.signature = mc.sign(payload, this.sk);
 
         req.certificates = certificates;
