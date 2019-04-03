@@ -93,7 +93,7 @@ export class Resource{
             if(! priorToken.delegable)
                 throw new ProtocolException("The token " + i + " allows no delegation");
         
-            if(currentToken.isSubTokenOf(priorToken))
+            if(! currentToken.isSubTokenOf(priorToken))
                 throw new ProtocolException("The token " + (i+1) + "exceeds the privileges of token " + i);
         }
         

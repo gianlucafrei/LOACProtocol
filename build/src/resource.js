@@ -52,7 +52,7 @@ class Resource {
                 throw new exceptions_1.ProtocolException("The signer of token " + (i + 1) + "is not the holder of token " + (i));
             if (!priorToken.delegable)
                 throw new exceptions_1.ProtocolException("The token " + i + " allows no delegation");
-            if (currentToken.isSubTokenOf(priorToken))
+            if (!currentToken.isSubTokenOf(priorToken))
                 throw new exceptions_1.ProtocolException("The token " + (i + 1) + "exceeds the privileges of token " + i);
         }
         successCallback(req.description);
