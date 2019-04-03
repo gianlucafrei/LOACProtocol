@@ -70,7 +70,7 @@ export class Resource{
             throw new ProtocolException("The pa which signed the root token is not trusted");
 
         // Check the chain of tokens 
-        for(let i=1; i++; i<n){ // Array indexes start with 0
+        for(let i=1; i<n; i++){ // Array indexes start with 0
 
             let currentToken = req.tokens[i];
             let priorToken = req.tokens[i-1];

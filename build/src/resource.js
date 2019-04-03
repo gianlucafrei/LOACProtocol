@@ -40,7 +40,7 @@ class Resource {
         let paIsTrusted = this.trustedPAKeys.includes(pkPa);
         if (!paIsTrusted)
             throw new exceptions_1.ProtocolException("The pa which signed the root token is not trusted");
-        for (let i = 1; i++; i < n) {
+        for (let i = 1; i < n; i++) {
             let currentToken = req.tokens[i];
             let priorToken = req.tokens[i - 1];
             let priorCertificate = req.certificates[i - 1];
