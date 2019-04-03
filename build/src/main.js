@@ -15,6 +15,9 @@ module.exports = function (curve, randomFunction) {
         Resource: resource_1.Resource,
         IdentityAuthority: identityAuthority_1.IdentityAuthority,
         PermissionAuthority: permissionAuthority_1.PermissionAuthority,
+        utils: {
+            now: exports.mc.now
+        }
     };
 };
 //# sourceMappingURL=main.js.map

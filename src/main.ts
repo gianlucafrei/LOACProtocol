@@ -19,5 +19,9 @@ module.exports = function(curve, randomFunction?){
         Resource: Resource,
         IdentityAuthority: IdentityAuthority,
         PermissionAuthority: PermissionAuthority,
+        
+        utils: {
+            now: mc.now
+        }
     };
 };
