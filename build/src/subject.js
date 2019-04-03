@@ -14,7 +14,7 @@ class Subject extends party_1.Party {
         req.username = username;
         req.publicKey = this.pk;
         req.signature = s;
-        return req.serialize();
+        return req;
     }
     issueDelegatedToken(username, delegable, resourceName, validityStart, validityEnd) {
         let nextToken = token_1.Token.signToken(username, delegable, resourceName, validityStart, validityEnd, this.sk);
@@ -24,7 +24,7 @@ class Subject extends party_1.Party {
         let req = new accessRequest_1.AccessRequest();
         req.time = main_1.mc.now();
         req.description = description;
-        let payload = utils.concat(username, req.time.toString(), req.description);
+        let payload = utils.concat(req.time.toString(), req.description);
         req.signature = main_1.mc.sign(payload, this.sk);
         req.certificates = certificates;
         req.tokens = tokens;

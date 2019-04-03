@@ -1,2 +1,23 @@
+import { Resource } from './resource';
+import { Subject } from './subject';
+import { IdentityAuthority } from './identityAuthority';
+import { PermissionAuthority } from './permissionAuthority';
+
 const minicert = require('minicertificates');
-export const mc = new minicert('p192', minicert.insecureRandom);
+export var mc;
+
+module.exports = function(curve, randomFunction?){
+
+    
+    if(randomFunction == null)
+        mc = new minicert(curve, minicert.insecureRandom);
+    else
+        mc = new minicert(curve, randomFunction);
+
+    return{
+        Subject: Subject,
+        Resource: Resource,
+        IdentityAuthority: IdentityAuthority,
+        PermissionAuthority: PermissionAuthority,
+    };
+};
