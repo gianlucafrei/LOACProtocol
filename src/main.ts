@@ -21,7 +21,8 @@ module.exports = function(curve, randomFunction?){
         PermissionAuthority: PermissionAuthority,
         
         utils: {
-            now: mc.now
+            dateToUnixTime: (date)=>Math.floor(date.getTime() / 1000)
         }
     };
 };
+
