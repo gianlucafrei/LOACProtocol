@@ -3,8 +3,7 @@ import { CertificateSigningRequest } from "./certificateSigningRequest";
 import { Party } from './party';
 import { Token } from './token';
 import * as utils from './utils';
-import { mc } from './main';
-
+import { Globals } from './globals';
 
 export class Subject extends Party {
 
@@ -12,7 +11,7 @@ export class Subject extends Party {
 
         // Create new keys and sign certificate request
         let msg = utils.concat(username, this.pk);
-        let s = mc.sign(msg, this.sk);
+        let s = Globals.mc.sign(msg, this.sk);
 
         // Create the request object
         let req = new CertificateSigningRequest();
@@ -43,11 +42,11 @@ export class Subject extends Party {
     ): AccessRequest {
 
         let req = new AccessRequest();
-        req.time = mc.now();
+        req.time = Globals.mc.now();
         req.description = description
 
         let payload = utils.concat(req.time.toString(), req.description);
-        req.signature = mc.sign(payload, this.sk);
+        req.signature = Globals.mc.sign(payload, this.sk);
 
         req.certificates = certificates;
         req.tokens = tokens;

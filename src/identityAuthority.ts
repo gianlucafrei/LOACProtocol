@@ -2,8 +2,7 @@ import * as utils from './utils';
 import { ProtocolException, PreconditionException } from './exceptions';
 import { Party } from './party';
 import { CertificateSigningRequest } from "./certificateSigningRequest";
-import { mc } from './main';
-
+import { Globals } from './globals';
 /**
  * Represents an Identity Authority which is a party with a secret
  */
@@ -45,7 +44,7 @@ export class IdentityAuthority extends Party {
 
         // Check the signature in the request
         let msg = utils.concat(request.username, request.publicKey);
-        let signatureIsValid = mc.verifySignatureWithPublicKey(msg, request.signature, request.publicKey);
+        let signatureIsValid = Globals.mc.verifySignatureWithPublicKey(msg, request.signature, request.publicKey);
         if(! signatureIsValid)
             throw new ProtocolException("Invalid signature in CertificateSingingRequest");
 
@@ -55,11 +54,11 @@ export class IdentityAuthority extends Party {
             throw new ProtocolException("Invalid username in singing request");
 
         // Sign the certificate
-        let validityStart = mc.now();
-        let validityEnd = mc.plus(validityStart, 0, 0, 0, 0, 0, this.certificateValidityInSeconds)
+        let validityStart = Globals.mc.now();
+        let validityEnd = Globals.mc.plus(validityStart, 0, 0, 0, 0, 0, this.certificateValidityInSeconds)
 
         // Sign the certificate
-        var cert = mc.signCertificate(
+        var cert = Globals.mc.signCertificate(
             request.username,
             request.publicKey,
             validityStart,

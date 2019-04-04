@@ -2,11 +2,14 @@ import { Resource } from "../src/resource";
 import { Subject } from '../src/subject';
 import { PermissionAuthority } from '../src/permissionAuthority';
 import { IdentityAuthority } from '../src/identityAuthority';
-import { mc } from '../src/main';
 import { ProtocolException } from '../src/exceptions';
 import { createVerify } from 'crypto';
 import { isValidName, concat } from '../src/utils';
 import { AccessRequest } from '../src/accessRequest';
+import { Globals } from '../src/globals';
+import { init } from '../src/main';
+
+init('p192');
 
 describe("Test the access request validation algorithm", ()=>{
 
@@ -22,7 +25,7 @@ describe("Test the access request validation algorithm", ()=>{
     let c1 = ia.handleOnboaradingRequest(req1, 'user1');
     let c2 = ia.handleOnboaradingRequest(req2, 'user2');
 
-    let now = mc.now();
+    let now = Globals.mc.now();
 
     let t1 = pa.issueToken('user1', true, "resource1", now-1000, now+1000);
     let t2 = user1.issueDelegatedToken('user2', false, "resource1", now-500, now+500);
@@ -49,10 +52,10 @@ describe("Test the access request validation algorithm", ()=>{
 
         // Create an request which was valid 100 seconds before
         let req = new AccessRequest();
-        req.time = mc.now()-100;
+        req.time = Globals.mc.now()-100;
         req.description = 'open'
         let payload = concat(req.time.toString(), req.description);
-        req.signature = mc.sign(payload, user2.sk);
+        req.signature = Globals.mc.sign(payload, user2.sk);
         req.certificates = [c1, c2];
         req.tokens = [t1, t2];
 
@@ -68,7 +71,7 @@ describe("Test the access request validation algorithm", ()=>{
 
         let cb = jest.fn();
         let payload = concat(req.time.toString(), req.description);
-        req.signature = mc.sign(payload, user1.sk);
+        req.signature = Globals.mc.sign(payload, user1.sk);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -80,7 +83,7 @@ describe("Test the access request validation algorithm", ()=>{
     test('test invalid signature', ()=>{
 
         let cb = jest.fn();
-        req.signature = mc.sign("foobar", user2.sk);
+        req.signature = Globals.mc.sign("foobar", user2.sk);
         
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();

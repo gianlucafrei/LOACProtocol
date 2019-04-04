@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
-const main_1 = require("./main");
+const globals_1 = require("./globals");
 class Token {
     constructor() { }
     static signToken(username, delegable, resource, validityStart, validityEnd, secret) {
         let payload = utils_1.concat(username, delegable.toString(), resource, validityStart.toString(), validityEnd.toString());
-        let signature = main_1.mc.sign(payload, secret);
+        let signature = globals_1.Globals.mc.sign(payload, secret);
         let t = new Token();
         t.username = username;
         t.delegable = delegable;

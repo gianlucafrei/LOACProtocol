@@ -2,7 +2,7 @@ import { PreconditionException, ProtocolException } from './exceptions';
 import { Party } from './party';
 import { isValidName, concat, isSubResourceName } from './utils';
 import { AccessRequest } from './accessRequest';
-import { mc } from './main';
+import { Globals } from './globals';
 
 export class Resource{
 
@@ -33,14 +33,14 @@ export class Resource{
         const n = req.certificates.length;
 
         // Timestamp check
-        let derivation = req.time - mc.now();
+        let derivation = req.time -Globals.mc.now();
         if(Math.abs(derivation) > this.timeDerivationThreshold)
             throw new ProtocolException("Time derivation to large");
 
         // Request signature check
         let payloadCn = concat(req.time.toString(), req.description);
         let c_n = req.certificates[n-1]
-        let username = mc.getAuthenticSigner(payloadCn, req.signature, c_n, this.trustedIAKeys);
+        let username = Globals.mc.getAuthenticSigner(payloadCn, req.signature, c_n, this.trustedIAKeys);
         if(username == null)
             throw new ProtocolException("Invalid signature in request");
         
@@ -64,7 +64,7 @@ export class Resource{
             t1.resource,
             t1.validityStart.toString(),
             t1.validityEnd.toString());
-        let pkPa = mc.recoverSignerPublicKey(payloadT1, t1.signature);
+        let pkPa = Globals.mc.recoverSignerPublicKey(payloadT1, t1.signature);
         let paIsTrusted = this.trustedPAKeys.includes(pkPa);
         if(! paIsTrusted)
             throw new ProtocolException("The pa which signed the root token is not trusted");
@@ -82,7 +82,7 @@ export class Resource{
                 currentToken.resource,
                 currentToken.validityStart.toString(),
                 currentToken.validityEnd.toString());
-            let signerT1 = mc.getAuthenticSigner(payloadTi, currentToken.signature, priorCertificate, this.trustedIAKeys);
+            let signerT1 = Globals.mc.getAuthenticSigner(payloadTi, currentToken.signature, priorCertificate, this.trustedIAKeys);
 
             if(signerT1 == null)
                 throw new ProtocolException("The signature of token " + (i+1) + " is not valid");

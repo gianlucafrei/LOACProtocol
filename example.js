@@ -1,6 +1,6 @@
 // Install package with 'npm install gianlucafrei/MiniCertificates'
 // Import the protocol library and init on curve p192
-var loac = require('loacprotocol')('p192');
+var loac = require('./build/src/main').init('p192'); //require('loacprotocol').init('p192');
 
 // Create the different parties for the demo
 let ia = new loac.IdentityAuthority(1000);

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const exceptions_1 = require("./exceptions");
 const utils_1 = require("./utils");
 const accessRequest_1 = require("./accessRequest");
-const main_1 = require("./main");
+const globals_1 = require("./globals");
 class Resource {
     constructor(name, trustedIAKeys, trustedPAKeys, timeDerivationThreshold = 10) {
         if (!utils_1.isValidName(name))
@@ -19,12 +19,12 @@ class Resource {
         if (!req.isValid())
             throw new exceptions_1.PreconditionException("Invalid access request");
         const n = req.certificates.length;
-        let derivation = req.time - main_1.mc.now();
+        let derivation = req.time - globals_1.Globals.mc.now();
         if (Math.abs(derivation) > this.timeDerivationThreshold)
             throw new exceptions_1.ProtocolException("Time derivation to large");
         let payloadCn = utils_1.concat(req.time.toString(), req.description);
         let c_n = req.certificates[n - 1];
-        let username = main_1.mc.getAuthenticSigner(payloadCn, req.signature, c_n, this.trustedIAKeys);
+        let username = globals_1.Globals.mc.getAuthenticSigner(payloadCn, req.signature, c_n, this.trustedIAKeys);
         if (username == null)
             throw new exceptions_1.ProtocolException("Invalid signature in request");
         let tn = req.tokens[n - 1];
@@ -36,7 +36,7 @@ class Resource {
             throw new exceptions_1.ProtocolException("The last token is not valid for this resource");
         let t1 = req.tokens[0];
         let payloadT1 = utils_1.concat(t1.username, t1.delegable.toString(), t1.resource, t1.validityStart.toString(), t1.validityEnd.toString());
-        let pkPa = main_1.mc.recoverSignerPublicKey(payloadT1, t1.signature);
+        let pkPa = globals_1.Globals.mc.recoverSignerPublicKey(payloadT1, t1.signature);
         let paIsTrusted = this.trustedPAKeys.includes(pkPa);
         if (!paIsTrusted)
             throw new exceptions_1.ProtocolException("The pa which signed the root token is not trusted");
@@ -45,7 +45,7 @@ class Resource {
             let priorToken = req.tokens[i - 1];
             let priorCertificate = req.certificates[i - 1];
             let payloadTi = utils_1.concat(currentToken.username, currentToken.delegable.toString(), currentToken.resource, currentToken.validityStart.toString(), currentToken.validityEnd.toString());
-            let signerT1 = main_1.mc.getAuthenticSigner(payloadTi, currentToken.signature, priorCertificate, this.trustedIAKeys);
+            let signerT1 = globals_1.Globals.mc.getAuthenticSigner(payloadTi, currentToken.signature, priorCertificate, this.trustedIAKeys);
             if (signerT1 == null)
                 throw new exceptions_1.ProtocolException("The signature of token " + (i + 1) + " is not valid");
             if (signerT1 != priorToken.username)

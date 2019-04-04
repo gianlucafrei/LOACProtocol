@@ -1,5 +1,8 @@
 import { PermissionAuthority } from "../src/permissionAuthority";
 import { Subject } from '../src/subject';
+import { init } from '../src/main';
+
+init('p192');
 
 describe("test tokens", ()=>{
 

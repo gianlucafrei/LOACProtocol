@@ -2,9 +2,14 @@ import { IdentityAuthority } from "../src/identityAuthority";
 import { PermissionAuthority } from '../src/permissionAuthority';
 import { Subject } from '../src/subject';
 import { AccessRequest } from '../src/accessRequest';
+import { init } from '../src/main';
+import { Party } from '../src/party';
 
+init('p192');
 
 describe('test access request', ()=>{
+
+    let foo = Party;
 
     let ia = new IdentityAuthority(1000);
     let pa = new PermissionAuthority();

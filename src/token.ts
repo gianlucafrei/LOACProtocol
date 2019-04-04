@@ -1,6 +1,6 @@
 import { concat, hexStringToBuffer, encodeObj, decodeBuf, bufferToHexString, isSubResourceName, Message, isValidName, isValidResourceWildcardName, isHexString } from './utils';
-import { mc } from './main';
 import { PreconditionException } from './exceptions';
+import { Globals } from './globals';
 
 /**
  * Represents a authorization token
@@ -41,7 +41,7 @@ export class Token implements Message{
             validityStart.toString(),
             validityEnd.toString());
 
-        let signature = mc.sign(payload, secret);
+        let signature = Globals.mc.sign(payload, secret);
 
         // Return a new token object
         let t = new Token();

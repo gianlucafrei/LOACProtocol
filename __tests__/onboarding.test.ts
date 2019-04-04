@@ -1,8 +1,11 @@
 import { Subject } from "../src/subject";
 import { IdentityAuthority } from '../src/identityAuthority';
-import { mc } from '../src/main';
+import { init } from '../src/main';
 import { ProtocolException } from '../src/exceptions';
 import { CertificateSigningRequest } from '../src/certificateSigningRequest';
+import { Globals } from '../src/globals';
+
+init('p192');
 
 describe('onboarding test', ()=>{
 
@@ -20,8 +23,8 @@ describe('onboarding test', ()=>{
         
         // Test a signature
         let msg = "foobar";
-        let sign = mc.sign(msg, subject.sk);
-        let isValid = mc.verifySignatureWithCertificate('user66', msg, sign, cert, [ia.pk]);
+        let sign = Globals.mc.sign(msg, subject.sk);
+        let isValid = Globals.mc.verifySignatureWithCertificate('user66', msg, sign, cert, [ia.pk]);
 
         expect(isValid).toBe(true);  
     });

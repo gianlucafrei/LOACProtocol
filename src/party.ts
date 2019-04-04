@@ -1,4 +1,4 @@
-import {mc} from './main';
+import { Globals } from './globals';
 
 /**
  * Represents a base class party.
@@ -16,13 +16,13 @@ export abstract class Party{
 
         // Set or generate secret
         if(secret == null){
-            this.sk = mc.newPrivateKey();
+            this.sk = Globals.mc.newPrivateKey();
         }
         else{
             this.sk = secret;
         }
 
         // Recompute public key
-        this.pk = mc.computePublicKeyFromPrivateKey(this.sk);
+        this.pk = Globals.mc.computePublicKeyFromPrivateKey(this.sk);
     };
 }

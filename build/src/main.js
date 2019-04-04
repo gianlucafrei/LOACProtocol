@@ -4,12 +4,13 @@ const resource_1 = require("./resource");
 const subject_1 = require("./subject");
 const identityAuthority_1 = require("./identityAuthority");
 const permissionAuthority_1 = require("./permissionAuthority");
+const globals_1 = require("./globals");
 const minicert = require('minicertificates');
-module.exports = function (curve, randomFunction) {
+function init(curve, randomFunction) {
     if (randomFunction == null)
-        exports.mc = new minicert(curve, minicert.insecureRandom);
+        globals_1.Globals.mc = new minicert(curve, minicert.insecureRandom);
     else
-        exports.mc = new minicert(curve, randomFunction);
+        globals_1.Globals.mc = new minicert(curve, randomFunction);
     return {
         Subject: subject_1.Subject,
         Resource: resource_1.Resource,
@@ -19,5 +20,7 @@ module.exports = function (curve, randomFunction) {
             dateToUnixTime: (date) => Math.floor(date.getTime() / 1000)
         }
     };
-};
+}
+exports.init = init;
+;
 //# sourceMappingURL=main.js.map
