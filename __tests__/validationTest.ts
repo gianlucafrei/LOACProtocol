@@ -123,32 +123,96 @@ describe("Test the access request validation algorithm", ()=>{
 
     test('test invalid signature in root token', ()=>{
 
+        let cb = jest.fn();
+        // This will make the signature invalid
+        t1.validityEnd = now + 7777;
+
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
     });
 
     test('test different username in root token', ()=>{
+
+        let cb = jest.fn();
+
+        let t1 = pa.issueToken('userXX', true, "resource1", now-1000, now+1000);
+
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
 
     });
 
     test('test root token not delegable', ()=>{
 
+        let cb = jest.fn();
+        let t1 = pa.issueToken('user1', false, "resource1", now-1000, now+1000);
+
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
     });
 
     test('test token 2 of 3 not delegable', ()=>{
 
+        let cb = jest.fn();
+
+        let user3 = new Subject();
+    
+        let c3 = ia.handleOnboaradingRequest(user3.generateOnboardingRequest('user3'), 'user3');
+        let t3 = user2.issueDelegatedToken('user3', false, "resource1", now-500, now+500);
+
+
+        let req = user2.createAccessRequest('user3', 'open', [t1, t2, t3], [c1, c2, c3]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
     });
 
     test('signature of delegated token not valid', ()=>{
+
+
+        let cb = jest.fn();
+        // This will make the signature invalid
+        t2.validityEnd = now + 777;
+
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
 
     });
 
 
     test('token not delegated by entitled user of the token before', ()=>{
 
+        let cb = jest.fn();
+        // This will make the signature invalid
+
+
+        let t2 = user2.issueDelegatedToken('user2', false, "resource1", now-500, now+500);
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
+
     });
     
 
     test('test untrusted ia', ()=>{
 
+        let cb = jest.fn();
+
+        let untrustedIa = new IdentityAuthority(1000);
+        let c2 = untrustedIa.handleOnboaradingRequest(user2.generateOnboardingRequest('user2'), 'user2');
+
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
     });
 
     test('test untrusted pa', ()=>{
