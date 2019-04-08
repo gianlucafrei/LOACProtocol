@@ -1,8 +1,7 @@
-import { PreconditionException, ProtocolException } from './exceptions';
-import { Party } from './party';
-import { isValidName, concat, isSubResourceName } from './utils';
 import { AccessRequest } from './accessRequest';
+import { PreconditionException, ProtocolException } from './exceptions';
 import { Globals } from './globals';
+import { concat, isSubResourceName, isValidName } from './utils';
 
 export class Resource{
 
@@ -43,13 +42,9 @@ export class Resource{
         let username = Globals.mc.getAuthenticSigner(payloadCn, req.signature, c_n, this.trustedIAKeys);
         if(username == null)
             throw new ProtocolException("Invalid signature in request");
-        
-        // Check of the last token
-        let tn = req.tokens[n-1];
-        if(tn.username != username)
-            throw new ProtocolException("The last token does not belong to the signer of the request");
 
         // Context check
+        let tn = req.tokens[n-1];
         if(req.time < tn.validityStart || req.time > tn.validityEnd)
             throw new ProtocolException("The last token is expired or not yet valid");
         
@@ -57,15 +52,18 @@ export class Resource{
             throw new ProtocolException("The last token is not valid for this resource");
 
         // Check the authenticity of the root token
+        let c1 = req.certificates[0];
+        let u1 = Globals.mc.getUsernameOfCertificate(c1);
         let t1 = req.tokens[0];
         let payloadT1 = concat(
-            t1.username,
+            u1,
             t1.delegable.toString(),
             t1.resource,
             t1.validityStart.toString(),
             t1.validityEnd.toString());
         let pkPa = Globals.mc.recoverSignerPublicKey(payloadT1, t1.signature);
         let paIsTrusted = this.trustedPAKeys.includes(pkPa);
+
         if(! paIsTrusted)
             throw new ProtocolException("The pa which signed the root token is not trusted");
 
@@ -74,21 +72,24 @@ export class Resource{
 
             let currentToken = req.tokens[i];
             let priorToken = req.tokens[i-1];
+
+            let currentCertificate = req.certificates[i];
             let priorCertificate = req.certificates[i-1];
 
+            let priorUsername = Globals.mc.getUsernameOfCertificate(priorCertificate);
+            let currentUsername = Globals.mc.getUsernameOfCertificate(currentCertificate);
+
             let payloadTi = concat(
-                currentToken.username,
+                currentUsername,
                 currentToken.delegable.toString(),
                 currentToken.resource,
                 currentToken.validityStart.toString(),
                 currentToken.validityEnd.toString());
-            let signerT1 = Globals.mc.getAuthenticSigner(payloadTi, currentToken.signature, priorCertificate, this.trustedIAKeys);
-
-            if(signerT1 == null)
-                throw new ProtocolException("The signature of token " + (i+1) + " is not valid");
             
-            if(signerT1 != priorToken.username)
-                throw new ProtocolException("The signer of token " + (i+1) + "is not the holder of token " + (i));
+            let tokenSignatureIsValid = Globals.mc.verifySignatureWithCertificate(priorUsername, payloadTi, currentToken.signature, priorCertificate, this.trustedIAKeys);
+            
+            if(! tokenSignatureIsValid)
+                throw new ProtocolException("The signature of the token " + i + " is not valid");
 
             if(! priorToken.delegable)
                 throw new ProtocolException("The token " + i + " allows no delegation");
@@ -98,7 +99,7 @@ export class Resource{
         }
         
         // Finally if everything as ok we call the success callback
-        successCallback(req.description);
+        successCallback(username, req.description);
     }
 
 }

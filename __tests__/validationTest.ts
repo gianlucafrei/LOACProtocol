@@ -39,7 +39,7 @@ describe("Test the access request validation algorithm", ()=>{
 
         let cb = jest.fn();
         resource.checkAccessRequest(req, cb)
-        expect(cb).toHaveBeenCalledWith(req.description);
+        expect(cb).toHaveBeenCalledWith("user2", 'open');
 
     });
 
@@ -227,6 +227,19 @@ describe("Test the access request validation algorithm", ()=>{
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
 
+    });
+
+    test('test delegated token extends privileges of prior token', ()=>{
+
+        let cb = jest.fn();
+
+        let t1 = pa.issueToken('user1', true, "resource1", now-1000, now+1000);
+        let t2 = user1.issueDelegatedToken('user2', false, "resource1", now-500, now+1500);
+
+        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+
+        expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
+        expect(cb).not.toHaveBeenCalled();
     });
 
 });

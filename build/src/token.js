@@ -8,7 +8,6 @@ class Token {
         let payload = utils_1.concat(username, delegable.toString(), resource, validityStart.toString(), validityEnd.toString());
         let signature = globals_1.Globals.mc.sign(payload, secret);
         let t = new Token();
-        t.username = username;
         t.delegable = delegable;
         t.resource = resource;
         t.validityStart = validityStart;
@@ -17,8 +16,6 @@ class Token {
         return t;
     }
     isValid() {
-        if (!utils_1.isValidName(this.username))
-            return false;
         if (typeof this.delegable != 'boolean')
             return false;
         if (!utils_1.isValidResourceWildcardName(this.resource))
@@ -35,7 +32,6 @@ class Token {
     }
     serialize() {
         let obj = {
-            u: this.username,
             d: this.delegable,
             r: this.resource,
             t: this.validityStart,
@@ -47,7 +43,6 @@ class Token {
     static deserialize(buf) {
         let obj = utils_1.decodeBuf(buf);
         let t = new Token();
-        t.username = obj.u;
         t.delegable = obj.d;
         t.resource = obj.r;
         t.validityStart = obj.t;

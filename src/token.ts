@@ -7,7 +7,6 @@ import { Globals } from './globals';
  */
 export class Token implements Message{
 
-    public username: string;
     public delegable: boolean;
     public resource: string;
     public validityStart: number;
@@ -45,7 +44,6 @@ export class Token implements Message{
 
         // Return a new token object
         let t = new Token();
-        t.username = username;
         t.delegable = delegable;
         t.resource = resource;
         t.validityStart = validityStart;
@@ -56,7 +54,6 @@ export class Token implements Message{
 
     public isValid(): boolean{
 
-        if(!isValidName(this.username)) return false;
         if(typeof this.delegable != 'boolean') return false;
         if(!isValidResourceWildcardName(this.resource)) return false;
         if(isNaN(this.validityStart)) return false;
@@ -71,7 +68,6 @@ export class Token implements Message{
     public serialize() : Buffer{
 
         let obj = {
-            u: this.username,
             d: this.delegable,
             r: this.resource,
             t: this.validityStart,
@@ -87,7 +83,6 @@ export class Token implements Message{
         let obj = decodeBuf(buf);
         let t = new Token();
 
-        t.username = obj.u;
         t.delegable = obj.d;
         t.resource = obj.r;
         t.validityStart = obj.t;

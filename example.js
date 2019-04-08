@@ -26,8 +26,8 @@ let serializedReq = req.serialize();
 
 console.log("Length of request: " + serializedReq.length + " bytes");
 
-let callback = function(){
-    console.log("Success");
+let callback = function(username, action){
+    console.log("User " + username + " wants to " + action);
 }
 
 resource.checkAccessRequest(serializedReq, callback)
