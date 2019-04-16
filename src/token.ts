@@ -5,7 +5,7 @@ import { Globals } from './globals';
 /**
  * Represents a authorization token
  */
-export class Token implements Message{
+export class Token implements Message {
 
     public delegable: boolean;
     public resource: string;
@@ -13,7 +13,7 @@ export class Token implements Message{
     public validityEnd: number;
     public signature: string;
 
-    private constructor(){}
+    private constructor() { }
 
     /**
      * Creates a new token by signing
@@ -25,12 +25,12 @@ export class Token implements Message{
      * @param secret 
      */
     public static signToken(
-        username:string,
-        delegable:boolean,
-        resource:string,
+        username: string,
+        delegable: boolean,
+        resource: string,
         validityStart: number,
         validityEnd: number,
-        secret: string):Token{
+        secret: string): Token {
 
         // Sign the payload
         let payload = concat(
@@ -52,20 +52,20 @@ export class Token implements Message{
         return t;
     }
 
-    public isValid(): boolean{
+    public isValid(): boolean {
 
-        if(typeof this.delegable != 'boolean') return false;
-        if(!isValidResourceWildcardName(this.resource)) return false;
-        if(isNaN(this.validityStart)) return false;
-        if(isNaN(this.validityEnd)) return false;
+        if (typeof this.delegable != 'boolean') return false;
+        if (!isValidResourceWildcardName(this.resource)) return false;
+        if (isNaN(this.validityStart)) return false;
+        if (isNaN(this.validityEnd)) return false;
 
-        if(!isHexString(this.signature)) return false;
-        if(this.validityEnd < this.validityStart) return false;
+        if (!isHexString(this.signature)) return false;
+        if (this.validityEnd < this.validityStart) return false;
 
         return true;
     }
 
-    public serialize() : Buffer{
+    public serialize(): Buffer {
 
         let obj = {
             d: this.delegable,
@@ -78,7 +78,7 @@ export class Token implements Message{
         return encodeObj(obj);
     }
 
-    public static deserialize(buf: Buffer){
+    public static deserialize(buf: Buffer) {
 
         let obj = decodeBuf(buf);
         let t = new Token();
@@ -97,13 +97,13 @@ export class Token implements Message{
      * the privileges of the other token
      * @param other The other token
      */
-    public isSubTokenOf(other: Token){
+    public isSubTokenOf(other: Token) {
 
         // Test if other is delegable
-        if(! other.delegable) return false;
-        if(! isSubResourceName(this.resource, other.resource)) return false;
-        if(other.validityStart > this.validityStart) return false;
-        if(other.validityEnd < this.validityEnd) return false;
+        if (!other.delegable) return false;
+        if (!isSubResourceName(this.resource, other.resource)) return false;
+        if (other.validityStart > this.validityStart) return false;
+        if (other.validityEnd < this.validityEnd) return false;
         return true;
     }
 }

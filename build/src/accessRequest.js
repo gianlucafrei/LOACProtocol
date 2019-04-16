@@ -35,14 +35,22 @@ class AccessRequest {
         return utils_1.encodeObj(obj);
     }
     static deserialize(buf) {
-        let obj = utils_1.decodeBuf(buf);
-        let req = new AccessRequest();
-        req.time = obj.t;
-        req.tokens = obj.T.map(t => token_1.Token.deserialize(t));
-        req.certificates = obj.C.map(c => utils_1.bufferToHexString(c));
-        req.description = obj.d;
-        req.signature = utils_1.bufferToHexString(obj.s);
-        return req;
+        try {
+            let obj = utils_1.decodeBuf(buf);
+            let req = new AccessRequest();
+            req.time = obj.t;
+            req.tokens = obj.T.map(t => token_1.Token.deserialize(t));
+            req.certificates = obj.C.map(c => utils_1.bufferToHexString(c));
+            req.description = obj.d;
+            req.signature = utils_1.bufferToHexString(obj.s);
+            if (req.isValid())
+                return req;
+            else
+                return null;
+        }
+        catch (err) {
+            return null;
+        }
     }
 }
 exports.AccessRequest = AccessRequest;

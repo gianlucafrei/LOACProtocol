@@ -20,11 +20,11 @@ class Subject extends party_1.Party {
         let nextToken = token_1.Token.signToken(username, delegable, resourceName, validityStart, validityEnd, this.sk);
         return nextToken;
     }
-    createAccessRequest(username, description, tokens, certificates) {
+    createAccessRequest(resourceName, description, tokens, certificates) {
         let req = new accessRequest_1.AccessRequest();
         req.time = globals_1.Globals.mc.now();
         req.description = description;
-        let payload = utils.concat(req.time.toString(), req.description);
+        let payload = utils.concat(resourceName, req.time.toString(), req.description);
         req.signature = globals_1.Globals.mc.sign(payload, this.sk);
         req.certificates = certificates;
         req.tokens = tokens;

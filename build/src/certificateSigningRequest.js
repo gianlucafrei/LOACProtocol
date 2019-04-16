@@ -14,12 +14,20 @@ class CertificateSigningRequest {
         return utils_1.encodeObj(obj);
     }
     static deserialize(buf) {
-        let obj = utils_1.decodeBuf(buf);
-        let req = new CertificateSigningRequest();
-        req.username = obj.u;
-        req.publicKey = utils_1.bufferToHexString(obj.p);
-        req.signature = utils_1.bufferToHexString(obj.s);
-        return req;
+        try {
+            let obj = utils_1.decodeBuf(buf);
+            let req = new CertificateSigningRequest();
+            req.username = obj.u;
+            req.publicKey = utils_1.bufferToHexString(obj.p);
+            req.signature = utils_1.bufferToHexString(obj.s);
+            if (req.isValid())
+                return req;
+            else
+                return null;
+        }
+        catch (err) {
+            return null;
+        }
     }
 }
 exports.CertificateSigningRequest = CertificateSigningRequest;

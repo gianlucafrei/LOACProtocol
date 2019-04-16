@@ -12,6 +12,10 @@ export class ProtocolException extends Error {
   }
 }
 
+/**
+ * A general exception if a precondition of a function
+ * is not fulfilled.
+ */
 export class PreconditionException extends Error {
 
   constructor(public message: string) {

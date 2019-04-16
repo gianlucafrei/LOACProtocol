@@ -16,13 +16,13 @@ class Resource {
     checkAccessRequest(req, successCallback) {
         if (Buffer.isBuffer(req))
             req = accessRequest_1.AccessRequest.deserialize(req);
-        if (!req.isValid())
+        if (req == null || !req.isValid())
             throw new exceptions_1.PreconditionException("Invalid access request");
         const n = req.certificates.length;
         let derivation = req.time - globals_1.Globals.mc.now();
         if (Math.abs(derivation) > this.timeDerivationThreshold)
             throw new exceptions_1.ProtocolException("Time derivation to large");
-        let payloadCn = utils_1.concat(req.time.toString(), req.description);
+        let payloadCn = utils_1.concat(this.name, req.time.toString(), req.description);
         let c_n = req.certificates[n - 1];
         let username = globals_1.Globals.mc.getAuthenticSigner(payloadCn, req.signature, c_n, this.trustedIAKeys);
         if (username == null)

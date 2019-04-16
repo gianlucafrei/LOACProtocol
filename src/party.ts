@@ -1,24 +1,33 @@
 import { Globals } from './globals';
 
 /**
- * Represents a base class party.
+ * This is a base class for an object holding a secret key like subjects and authorities.
  */
-export abstract class Party{
+export abstract class Party {
 
+    /**
+     * The secret key of the party as a string.
+     */
     public sk: string;
+
+    /**
+     * The public key of the party as a string.
+     */
     public pk: string;
 
     /**
-     * Create a new 
-     * @param secret 
+     * Create a new instance, must be called by subclasses.
+     * If a secret is provided this is used as the private key.
+     * If the secret is null, a new secret will be generated.
+     * @param secret The secret key as string or null
      */
-    public constructor(secret?: string){
+    public constructor(secret?: string) {
 
         // Set or generate secret
-        if(secret == null){
+        if (secret == null) {
             this.sk = Globals.mc.newPrivateKey();
         }
-        else{
+        else {
             this.sk = secret;
         }
 

@@ -62,54 +62,73 @@ export function decodeBuf(buf: Buffer): any {
  * valid names are for example: *, *.foo, foo, foo.bar,...
  * @param name The name of the resource
  */
-export function isValidResourceWildcardName(name:string){
+export function isValidResourceWildcardName(name: string) {
 
-    if(!isString(name)) return false;
+    if (!isString(name)) return false;
 
     let result = /^(((\*\.)?([a-zA-Z0-9_]+\.)*([a-zA-Z0-9_]+))|(\*))$/.test(name);
     return result;
 }
 
-export function isValidName(name:string){
+/**
+ * Return true if the name is valid name for a resource
+ * @param name 
+ */
+export function isValidName(name: string) {
 
-    if(!isString(name)) return false;
+    if (!isString(name)) return false;
 
     let result = /^([a-zA-Z0-9_]+\.)*([a-zA-Z0-9_]+)$/.test(name);
     return result;
 }
 
-export function isSubResourceName(child: string, parent:string){
+/**
+ * Returns true if the child wildcard name does not extend the parent name
+ * isSubResourceName("foo.bar", "*.bar") => true
+ * isSubResourceName("*.bar", "foo.bar") => false
+ * @param child 
+ * @param parent 
+ */
+export function isSubResourceName(child: string, parent: string) {
 
-    if(!isValidResourceWildcardName(child) || !isValidResourceWildcardName(parent))
+    if (!isValidResourceWildcardName(child) || !isValidResourceWildcardName(parent))
         return false;
 
-    if(parent == '*') return true;
-    if(child == parent) return true;
+    if (parent == '*') return true;
+    if (child == parent) return true;
 
     // check that parent has *. at start
-    if(parent.indexOf('*.') != 0) return false;
+    if (parent.indexOf('*.') != 0) return false;
 
 
     let idx = child.indexOf(parent.substring(2, parent.length));
-    if(idx <= 0) 
+    if (idx <= 0)
         return false;
 
     return true;
 }
 
-export function isString(obj: any){
+/**
+ * Returns true if the object is a string
+ * @param obj The object to test
+ */
+export function isString(obj: any) {
 
     return (typeof obj === 'string' || obj instanceof String)
 }
 
-export function isHexString(obj: any){
+/**
+ * Returns true if the object is a valid hex string
+ * @param obj The object to test
+ */
+export function isHexString(obj: any) {
 
-    if(!isString(obj)) return false;
+    if (!isString(obj)) return false;
 
-    let s : string = obj;
+    let s: string = obj;
 
     // Check if string has even length
-    if(s.length % 2 != 0)
+    if (s.length % 2 != 0)
         return false;
 
     return /^[a-fA-F0-9]+$/.test(s);
@@ -120,8 +139,8 @@ export function isHexString(obj: any){
  * singingRequest and AccessRequests and so on
  */
 export interface Message {
-    
-    serialize() : Buffer;
+
+    serialize(): Buffer;
     isValid(): Boolean;
 
 }

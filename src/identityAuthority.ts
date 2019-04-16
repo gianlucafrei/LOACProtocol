@@ -3,6 +3,7 @@ import { ProtocolException, PreconditionException } from './exceptions';
 import { Party } from './party';
 import { CertificateSigningRequest } from "./certificateSigningRequest";
 import { Globals } from './globals';
+
 /**
  * Represents an Identity Authority which is a party with a secret
  */
@@ -33,24 +34,24 @@ export class IdentityAuthority extends Party {
     public handleOnboaradingRequest(req: Buffer | CertificateSigningRequest, authenticatedUser: String): string {
 
         // Deserialize if needed and check if the request is valid
-        let request : CertificateSigningRequest;
-        if(Buffer.isBuffer(req))
+        let request: CertificateSigningRequest;
+        if (Buffer.isBuffer(req))
             request = CertificateSigningRequest.deserialize(req);
         else
             request = req;
 
-        if(! request.isValid())
+        if (!request.isValid())
             throw new PreconditionException("Invalid request");
 
         // Check the signature in the request
         let msg = utils.concat(request.username, request.publicKey);
         let signatureIsValid = Globals.mc.verifySignatureWithPublicKey(msg, request.signature, request.publicKey);
-        if(! signatureIsValid)
+        if (!signatureIsValid)
             throw new ProtocolException("Invalid signature in CertificateSingingRequest");
 
         // check if the user does match
         let userIsValid = request.username == authenticatedUser;
-        if(! userIsValid)
+        if (!userIsValid)
             throw new ProtocolException("Invalid username in singing request");
 
         // Sign the certificate
