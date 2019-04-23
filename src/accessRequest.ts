@@ -67,7 +67,7 @@ export class AccessRequest implements Message {
      */
     public serialize(): Buffer {
 
-        let T = this.tokens.map(t => t.serialize());
+        let T = this.tokens.map(t => Token.copy(t).serialize());
         let C = this.certificates.map(c => hexStringToBuffer(c));
 
         let obj = {

@@ -23,7 +23,7 @@ class AccessRequest {
         return true;
     }
     serialize() {
-        let T = this.tokens.map(t => t.serialize());
+        let T = this.tokens.map(t => token_1.Token.copy(t).serialize());
         let C = this.certificates.map(c => utils_1.hexStringToBuffer(c));
         let obj = {
             t: this.time,

@@ -47,8 +47,7 @@ describe("Test the access request validation algorithm", ()=>{
 
         let cb = jest.fn();
 
-        // Create an request which was valid 100 seconds before
-        let req = user2.createAccessRequest('resourceXXX', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resourceXX', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -126,7 +125,7 @@ describe("Test the access request validation algorithm", ()=>{
 
         let t1 = pa.issueToken('user1', true, "resource1", now-1000, now-200);
         let t2 = user1.issueDelegatedToken('user2', false, "resource1", now-900, now-300);
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -139,7 +138,7 @@ describe("Test the access request validation algorithm", ()=>{
         // This will make the signature invalid
         t1.validityEnd = now + 7777;
 
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -151,7 +150,7 @@ describe("Test the access request validation algorithm", ()=>{
 
         let t1 = pa.issueToken('userXX', true, "resource1", now-1000, now+1000);
 
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -163,7 +162,7 @@ describe("Test the access request validation algorithm", ()=>{
         let cb = jest.fn();
         let t1 = pa.issueToken('user1', false, "resource1", now-1000, now+1000);
 
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -179,7 +178,7 @@ describe("Test the access request validation algorithm", ()=>{
         let t3 = user2.issueDelegatedToken('user3', false, "resource1", now-500, now+500);
 
 
-        let req = user2.createAccessRequest('user3', 'open', [t1, t2, t3], [c1, c2, c3]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2, t3], [c1, c2, c3]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -192,7 +191,7 @@ describe("Test the access request validation algorithm", ()=>{
         // This will make the signature invalid
         t2.validityEnd = now + 777;
 
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -207,7 +206,7 @@ describe("Test the access request validation algorithm", ()=>{
 
 
         let t2 = user2.issueDelegatedToken('user2', false, "resource1", now-500, now+500);
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -222,7 +221,7 @@ describe("Test the access request validation algorithm", ()=>{
         let untrustedIa = new IdentityAuthority(1000);
         let c2 = untrustedIa.handleOnboaradingRequest(user2.generateOnboardingRequest('user2'), 'user2');
 
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
     });
@@ -234,7 +233,7 @@ describe("Test the access request validation algorithm", ()=>{
         let new_t1 = untrustedPA.issueToken('user1', true, "resource1", 0, 10000);
         let t2 = user1.issueDelegatedToken('user2', false, "resource1", 100, 9000);
 
-        let req = user2.createAccessRequest('user2', 'open', [new_t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [new_t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();
@@ -248,7 +247,7 @@ describe("Test the access request validation algorithm", ()=>{
         let t1 = pa.issueToken('user1', true, "resource1", now-1000, now+1000);
         let t2 = user1.issueDelegatedToken('user2', false, "resource1", now-500, now+1500);
 
-        let req = user2.createAccessRequest('user2', 'open', [t1, t2], [c1, c2]);
+        let req = user2.createAccessRequest('resource1', 'open', [t1, t2], [c1, c2]);
 
         expect(()=> resource.checkAccessRequest(req, cb)).toThrowError(ProtocolException);
         expect(cb).not.toHaveBeenCalled();

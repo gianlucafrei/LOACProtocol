@@ -25,7 +25,7 @@
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
-    "doc": "./node_modules/.bin/typedoc --out build/docs",
+    "doc": "typedoc --out ./doc ./src/",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "jest --coverage",
     "test:watch": "jest --watch"

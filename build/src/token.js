@@ -40,6 +40,15 @@ class Token {
         };
         return utils_1.encodeObj(obj);
     }
+    static copy(other) {
+        let t = new Token();
+        t.delegable = other.delegable;
+        t.resource = other.resource;
+        t.validityStart = other.validityStart;
+        t.validityEnd = other.validityEnd;
+        t.signature = other.signature;
+        return t;
+    }
     static deserialize(buf) {
         let obj = utils_1.decodeBuf(buf);
         let t = new Token();

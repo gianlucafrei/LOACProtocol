@@ -78,6 +78,24 @@ export class Token implements Message {
         return encodeObj(obj);
     }
 
+    /**
+     * This is a copy constructor
+     * @param otherToken the token to copy
+     */
+    public static copy(other){
+
+        let t = new Token();
+
+        t.delegable = other.delegable;
+        t.resource = other.resource;
+        t.validityStart = other.validityStart;
+        t.validityEnd = other.validityEnd;
+        t.signature = other.signature;
+
+        return t;
+
+    }
+
     public static deserialize(buf: Buffer) {
 
         let obj = decodeBuf(buf);
