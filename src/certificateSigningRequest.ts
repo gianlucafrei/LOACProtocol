@@ -43,6 +43,19 @@ export class CertificateSigningRequest implements Message {
         return encodeObj(obj);
     }
 
+    public static copy(other): CertificateSigningRequest {
+
+        let req = new CertificateSigningRequest();
+        req.username = other.username;
+        req.publicKey = other.publicKey;
+        req.signature = other.signature;
+
+        if (req.isValid())
+            return req;
+        else
+            return null;
+    }
+
     /**
      * Converts a serialized singing request back to an object and returns it
      * if the request is valid, otherwise null is returned.

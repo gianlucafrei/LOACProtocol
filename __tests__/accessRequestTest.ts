@@ -4,6 +4,7 @@ import { Subject } from '../src/subject';
 import { AccessRequest } from '../src/accessRequest';
 import { init } from '../src/main';
 import { Party } from '../src/party';
+import { Resource } from '../src/resource';
 
 init('p192');
 
@@ -42,6 +43,4 @@ describe('test access request', ()=>{
         expect(deserialized.signature).toEqual(req.signature);
         expect(deserialized.tokens).toEqual(req.tokens);
     });
-
-
-})
+});

@@ -38,7 +38,7 @@ export class IdentityAuthority extends Party {
         if (Buffer.isBuffer(req))
             request = CertificateSigningRequest.deserialize(req);
         else
-            request = req;
+            request = CertificateSigningRequest.copy(req);
 
         if (!request.isValid())
             throw new PreconditionException("Invalid request");

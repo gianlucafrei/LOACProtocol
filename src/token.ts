@@ -59,7 +59,9 @@ export class Token implements Message {
         if (isNaN(this.validityStart)) return false;
         if (isNaN(this.validityEnd)) return false;
 
-        if (!isHexString(this.signature)) return false;
+        if (!isHexString(this.signature))
+            return false;
+            
         if (this.validityEnd < this.validityStart) return false;
 
         return true;

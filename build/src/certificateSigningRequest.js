@@ -13,6 +13,16 @@ class CertificateSigningRequest {
         };
         return utils_1.encodeObj(obj);
     }
+    static copy(other) {
+        let req = new CertificateSigningRequest();
+        req.username = other.username;
+        req.publicKey = other.publicKey;
+        req.signature = other.signature;
+        if (req.isValid())
+            return req;
+        else
+            return null;
+    }
     static deserialize(buf) {
         try {
             let obj = utils_1.decodeBuf(buf);

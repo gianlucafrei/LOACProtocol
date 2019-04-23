@@ -15,7 +15,7 @@ class IdentityAuthority extends party_1.Party {
         if (Buffer.isBuffer(req))
             request = certificateSigningRequest_1.CertificateSigningRequest.deserialize(req);
         else
-            request = req;
+            request = certificateSigningRequest_1.CertificateSigningRequest.copy(req);
         if (!request.isValid())
             throw new exceptions_1.PreconditionException("Invalid request");
         let msg = utils.concat(request.username, request.publicKey);
